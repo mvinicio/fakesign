@@ -24,16 +24,16 @@ export default function Home() {
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-medium mb-6"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-100 text-indigo-700 rounded-full text-sm font-semibold mb-6 shadow-sm ring-1 ring-indigo-200"
         >
           <Shield className="w-4 h-4" />
-          Verificador de Integridad PDF
+          Anny Fake Sign
         </motion.div>
-        <h1 className="text-5xl font-extrabold text-gray-900 tracking-tight mb-4">
+        <h1 className="text-6xl font-black text-gray-900 tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-indigo-950 to-gray-900">
           ¿Es una firma real?
         </h1>
-        <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-          Detecta instantáneamente si un PDF tiene una firma digital criptográfica válida o si es una simple imagen montada.
+        <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+          Nuestra tecnología analiza la estructura interna del PDF para detectar si una firma es digital criptográfica o simplemente una imagen superpuesta.
         </p>
       </div>
 
