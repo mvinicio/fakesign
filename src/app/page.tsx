@@ -92,7 +92,7 @@ export default function Home() {
                             ? 'Este documento contiene objetos de firma (Sig) correspondientes a una firma electrónica válida. La integridad del documento está respaldada por una autoridad de certificación.'
                             : isVisual
                               ? 'Se detectó únicamente una representación visual que simula una firma, sin respaldo criptográfico.'
-                              : 'se detectó únicamente una representación visual que simula una firma, sin respaldo criptográfico.'
+                              : 'Se detectó únicamente una representación visual que simula una firma, sin respaldo criptográfico.'
                           }
                         </p>
                       </div>
