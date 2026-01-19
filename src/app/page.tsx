@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Shield, FileWarning, CheckCircle2, XCircle, Info, RefreshCcw } from 'lucide-react';
 import FileUploader from '@/components/FileUploader';
+import VisitCounter from '@/components/VisitCounter';
 import { VerificationResult } from '@/actions/verify-pdf';
 
 export default function Home() {
@@ -29,11 +30,14 @@ export default function Home() {
           <Shield className="w-4 h-4" />
           Anny Fake Sign
         </motion.div>
-        <h1 className="text-6xl font-black text-gray-900 tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-indigo-950 to-gray-900">
+        <h1 className="text-5xl font-black text-gray-500 tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-r from-gray-900 via-indigo-950 to-gray-900">
           ¿Es una firma real?
+
         </h1>
         <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-          Nuestra tecnología analiza la estructura interna del PDF para detectar si una firma es digital criptográfica o simplemente una imagen superpuesta.
+          Verifique la autenticidad de una firma digital de forma segura y automatizada.
+          Identifique firmas fraudulentas en PDF sin comprometer la privacidad de sus documentos
+
         </p>
       </div>
 
@@ -59,7 +63,7 @@ export default function Home() {
                   </div>
                   <div>
                     <h2 className="text-2xl font-bold text-gray-800">
-                      {isDigital ? 'Firma Digital Detectada' : isVisual ? 'Posible Firma Montada' : 'No se detectaron firmas'}
+                      {isDigital ? 'Firma Digital Detectada' : isVisual ? 'Posible Firma Montada' : 'El documento NO contiene firma digital'}
                     </h2>
                     <p className="text-gray-500 font-mono text-sm truncate max-w-[300px]">
                       {result.filename}
@@ -87,8 +91,8 @@ export default function Home() {
                           {isDigital
                             ? 'Este documento contiene objetos de firma (Sig) correspondientes a una firma electrónica válida. La integridad del documento está respaldada por una autoridad de certificación.'
                             : isVisual
-                              ? 'Se detectaron campos de firma visuales pero sin datos criptográficos asociados. Esto sugiere que la firma es una imagen pegada o fue escaneada.'
-                              : 'No se encontraron objetos de firma digital ni campos visuales de firma en este PDF.'
+                              ? 'Se detectó únicamente una representación visual que simula una firma, sin respaldo criptográfico.'
+                              : 'se detectó únicamente una representación visual que simula una firma, sin respaldo criptográfico.'
                           }
                         </p>
                       </div>
@@ -116,30 +120,83 @@ export default function Home() {
                   </div>
 
                   <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100">
-                    <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
-                      <Shield className="w-5 h-5 text-blue-600" />
-                      ¿Por qué es importante?
+                    <h3 className="font-bold text-gray-800 mb-6 flex items-center gap-2">
+                      <Shield className="w-5 h-5 text-indigo-600" />
+                      Análisis Técnico
                     </h3>
-                    <ul className="space-y-4 text-sm text-gray-600">
-                      <li className="flex gap-3">
-                        <span className="text-blue-500 font-bold">•</span>
-                        <div>
-                          <strong>Validez Legal:</strong> Solo las firmas digitales criptográficas tienen la misma validez que una firma manuscrita bajo leyes de comercio electrónico.
+                    <div className="space-y-4">
+                      {/* Signature Dictionary */}
+                      <div className="flex gap-3">
+                        {isDigital ? (
+                          <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0" />
+                        ) : (
+                          <XCircle className="w-5 h-5 text-red-500 shrink-0" />
+                        )}
+                        <div className="text-sm">
+                          <p className={`font-semibold ${isDigital ? 'text-green-800' : 'text-red-800'}`}>
+                            {isDigital ? 'Objeto de firma detectado' : 'Sin objetos de firma digital'}
+                          </p>
+                          <p className="text-gray-600 text-xs mt-0.5">
+                            {isDigital
+                              ? 'Se encontró un Signature Dictionary válido en la estructura del PDF.'
+                              : 'No se encontraron objetos de firma digital (Signature Dictionary) en la estructura interna del PDF.'}
+                          </p>
                         </div>
-                      </li>
-                      <li className="flex gap-3">
-                        <span className="text-blue-500 font-bold">•</span>
-                        <div>
-                          <strong>Integridad:</strong> Una firma digital asegura que el PDF no ha sido modificado después de ser firmado.
+                      </div>
+
+                      {/* Certificates */}
+                      <div className="flex gap-3">
+                        {isDigital ? (
+                          <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0" />
+                        ) : (
+                          <XCircle className="w-5 h-5 text-red-500 shrink-0" />
+                        )}
+                        <div className="text-sm">
+                          <p className={`font-semibold ${isDigital ? 'text-green-800' : 'text-red-800'}`}>
+                            {isDigital ? 'Certificado X.509 verificado' : 'Sin certificados digitales'}
+                          </p>
+                          <p className="text-gray-600 text-xs mt-0.5">
+                            {isDigital
+                              ? 'El documento contiene certificados digitales válidos asociados.'
+                              : 'No se detectaron certificados digitales (X.509) asociados al documento.'}
+                          </p>
                         </div>
-                      </li>
-                      <li className="flex gap-3">
-                        <span className="text-blue-500 font-bold">•</span>
-                        <div>
-                          <strong>Riesgo de Fraude:</strong> Las firmas "montadas" (capturas de pantalla) son fáciles de falsificar y no ofrecen ninguna garantía de que el emisor realmente firmó el documento.
+                      </div>
+
+                      {/* Integrity Seal */}
+                      <div className="flex gap-3">
+                        {isDigital ? (
+                          <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0" />
+                        ) : (
+                          <XCircle className="w-5 h-5 text-red-500 shrink-0" />
+                        )}
+                        <div className="text-sm">
+                          <p className={`font-semibold ${isDigital ? 'text-green-800' : 'text-red-800'}`}>
+                            {isDigital ? 'Sello de integridad activo' : 'Sin sello de integridad'}
+                          </p>
+                          <p className="text-gray-600 text-xs mt-0.5">
+                            {isDigital
+                              ? 'La integridad criptográfica garantiza que el archivo no fue modificado.'
+                              : 'No existe sello de integridad criptográfica que garantice que el archivo no fue modificado.'}
+                          </p>
                         </div>
-                      </li>
-                    </ul>
+                      </div>
+
+                      {/* Visual Layer - Only if applicable or as warning in failure */}
+                      {(isVisual || !isDigital) && (
+                        <div className="flex gap-3 pt-2 border-t border-gray-200 mt-4">
+                          <FileWarning className="w-5 h-5 text-amber-500 shrink-0" />
+                          <div className="text-sm">
+                            <p className="font-semibold text-amber-800">
+                              Representación Visual
+                            </p>
+                            <p className="text-gray-600 text-xs mt-0.5">
+                              Se identificó un elemento gráfico superpuesto, correspondiente a una imagen o capa visual.
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -148,8 +205,11 @@ export default function Home() {
         </AnimatePresence>
       </div>
 
-      <footer className="mt-auto py-8 text-gray-400 text-sm">
-        Desarrollado con precisión para detección de fraudes documentales.
+      <footer className="mt-auto py-8 flex flex-col items-center gap-4">
+        <VisitCounter />
+        <p className="text-gray-400 text-sm">
+          Desarrollado por Marco Sotomayor para detección de fraudes documentales.
+        </p>
       </footer>
     </main>
   );
