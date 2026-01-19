@@ -21,6 +21,12 @@ export default function FileUploader({ onResult, loading, setLoading }: FileUplo
             return;
         }
 
+        const MAX_SIZE = 10 * 1024 * 1024; // 10MB
+        if (file.size > MAX_SIZE) {
+            alert('El archivo es demasiado grande (máximo 10MB)');
+            return;
+        }
+
         setLoading(true);
         const formData = new FormData();
         formData.append('pdf', file);
@@ -28,9 +34,15 @@ export default function FileUploader({ onResult, loading, setLoading }: FileUplo
         try {
             const { verifyPdfAction } = await import('@/actions/verify-pdf');
             const result = await verifyPdfAction(formData);
-            onResult(result);
+
+            if (!result.success && result.error) {
+                alert(result.error);
+            } else {
+                onResult(result);
+            }
         } catch (error) {
             console.error(error);
+            alert('Ocurrió un error al procesar el archivo');
         } finally {
             setLoading(false);
         }

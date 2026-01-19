@@ -21,6 +21,7 @@ export async function verifyPdfAction(formData: FormData): Promise<VerificationR
     }
 
     try {
+        console.log(`Processing PDF: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`);
         const arrayBuffer = await file.arrayBuffer();
         const buffer = Buffer.from(arrayBuffer);
 
@@ -36,7 +37,7 @@ export async function verifyPdfAction(formData: FormData): Promise<VerificationR
         return {
             success: false,
             signatures: [],
-            error: 'Error al procesar el PDF',
+            error: error instanceof Error ? error.message : 'Error al procesar el PDF estructuralmente. Es posible que el archivo esté corrupto o protegido.',
             filename: file.name
         };
     }
